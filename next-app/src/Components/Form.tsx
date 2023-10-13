@@ -2,7 +2,7 @@ type props = {
   email: string;
   password: string;
   confirmPassword: string;
-  isSubmited: boolean;
+  isSubmitting: boolean;
   setEmail: (email: string) => void;
   setPassword: (password: string) => void;
   setConfirmPassword: (confirmPassword: string) => void;
@@ -12,7 +12,7 @@ const Form: React.FC<props> = ({
   email,
   password,
   confirmPassword,
-  isSubmited,
+  isSubmitting,
   setEmail,
   setPassword,
   setConfirmPassword,
@@ -48,7 +48,7 @@ const Form: React.FC<props> = ({
       </div>
       <div className="flex justify-center">
         <button
-          disabled={isSubmited}
+          disabled={isSubmitting}
           type="submit"
           className="bg-orange-700 w-1/2 my-3 md:w-1/4 p-1 rounded-md hover:bg-green-900 duration-1000"
         >

@@ -26,11 +26,13 @@ export default function Home() {
       setIsSubmited(false);
     }
 
-    await new Promise((resolve) => setTimeout(resolve, 5000));
+    await new Promise((resolve) => setTimeout(resolve, 3000));
 
     setEmail("");
     setPassword("");
     setConfirmPassword("");
+
+    setErrors([]);
 
     setIsSubmited(false);
   };
