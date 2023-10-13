@@ -49,7 +49,7 @@ export default function Home() {
             setEmail={setEmail}
             setPassword={setPassword}
             setConfirmPassword={setConfirmPassword}
-            isSubmited={isSubmited}
+            isSubmitting={isSubmited}
           />
         </form>
       </div>
