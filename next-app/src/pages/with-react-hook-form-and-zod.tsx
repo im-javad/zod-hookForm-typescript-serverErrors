@@ -1,18 +1,61 @@
-import { FieldValues, useForm } from "react-hook-form";
+import { SignUpSchemaType, signUpSchema } from "@/lib/types";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
 
-export default function withoutReactHookForm() {
+export default function withoutReactHookFormAndZod() {
   const {
     register,
     handleSubmit,
     formState: { errors, isSubmitting },
     reset,
-    getValues,
-  } = useForm();
+    setError,
+  } = useForm<SignUpSchemaType>({
+    resolver: zodResolver(signUpSchema),
+  });
 
-  const onSubmit = async (data: FieldValues) => {
-    await new Promise((resolve) => setTimeout(resolve, 3000));
+  const onSubmit = async (data: SignUpSchemaType) => {
+    const response = await fetch("../api/signup", {
+      method: "POST",
+      body: JSON.stringify({
+        email: data.email,
+        password: data.password,
+        confirmPassword: 2834893745385784,
+      }),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
 
-    reset();
+    const responseData = await response.json();
+
+    if (!response.ok) {
+      alert("Submitting form failled!");
+      return;
+    }
+
+    if (responseData.errors) {
+      const errors = responseData.errors;
+      if (errors.email) {
+        setError("email", {
+          type: "server",
+          message: errors.email,
+        });
+      } else if (errors.password) {
+        setError("password", {
+          type: "server",
+          message: errors.password,
+        });
+      } else if (errors.confirmPassword) {
+        setError("confirmPassword", {
+          type: "server",
+          message: errors.confirmPassword,
+        });
+      } else {
+        alert("Something went wrong!");
+      }
+    }
+
+    // reset();
   };
 
   return (
@@ -22,9 +65,7 @@ export default function withoutReactHookForm() {
           <div className="form-area flex flex-col top-44 relative font-bold">
             <div className="flex justify-center flex-col">
               <input
-                {...register("email", {
-                  required: "Email is required",
-                })}
+                {...register("email")}
                 type="email"
                 placeholder="Email"
                 className="w-full md:w-1/2 bg-customAqua my-1 p-1 rounded-md text-black duration-1000"
@@ -37,13 +78,7 @@ export default function withoutReactHookForm() {
             </div>
             <div className="flex justify-center flex-col">
               <input
-                {...register("password", {
-                  required: "Password is required",
-                  minLength: {
-                    value: 7,
-                    message: "Password must be larger than 7 char",
-                  },
-                })}
+                {...register("password")}
                 type="password"
                 placeholder="Password"
                 className="w-full md:w-1/2 bg-customAqua my-1 p-1 rounded-md text-black duration-1000"
@@ -56,11 +91,7 @@ export default function withoutReactHookForm() {
             </div>
             <div className="flex justify-center duration-1000 flex-col">
               <input
-                {...register("confirmPassword", {
-                  required: "Confirm password in required",
-                  validate: (value) =>
-                    value === getValues("password") || "Password must match",
-                })}
+                {...register("confirmPassword")}
                 type="password"
                 placeholder="Confirm Password"
                 className="w-full md:w-1/2 bg-customAqua my-1 p-1 rounded-md text-black duration-1000"
